@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="ibmcloudweather" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+	<thing-type id="hourlyforecast">
+		<label>The weather from IBM weather company</label>
+		<description>The weather from IBM weather company in the Cloud</description>
+		<channels>
+			<channel id="temp1h" typeId="temp1h" />
+			<channel id="temp2h" typeId="temp2h" />
+			<channel id="temp3h" typeId="temp3h" />
+			<channel id="temp4h" typeId="temp4h" />
+			<channel id="temp6h" typeId="temp6h" />
+			<channel id="temp9h" typeId="temp9h" />
+			<channel id="temp12h" typeId="temp12h" />
+			<channel id="temp18h" typeId="temp18h" />
+			<channel id="temp24h" typeId="temp24h" />
+			<channel id="temp30h" typeId="temp30h" />
+			<channel id="temp36h" typeId="temp36h" />
+			<channel id="temp42h" typeId="temp42h" />
+			<channel id="temp48h" typeId="temp48h" />
+		</channels>
+		<config-description>
+			<parameter name="user" type="text" required="true" readOnly="false">
+				<label>userid</label>
+				<description>THe Weather company userid</description>
+			</parameter>
+			<parameter name="password" type="text" required="true">
+				<context>password</context>
+				<label>The Weather company userid password</label>
+				<description>The Weather company userid password</description>
+			</parameter>
+            <parameter name="url" type="text" required="true">
+                <context>url</context>
+                <label>URL</label>
+                <description>The Weather company Instance URL</description>
+            </parameter>
+            <parameter name="refresh" type="integer" required="true">
+                <label>Refresh Timer </label>
+                <description>Refresh Timer</description>
+                <default>1800</default>
+            </parameter>
+		</config-description>
+	</thing-type>
+
+	<thing-type id="meteo">
+		<label>The weather from IBM weather company</label>
+		<description>The weather from IBM weather company in the Cloud</description>
+		<channels>
+			<channel id="temp" typeId="temp" />
+			<channel id="rh" typeId="rh" />
+			<channel id="wx_phrase" typeId="wx_phrase" />
+			<channel id="pressure" typeId="pressure" />
+			<channel id="wdir" typeId="wdir" />
+			<channel id="wdir_cardinal" typeId="wdir_cardinal" />
+			<channel id="wspd" typeId="wspd" />
+			<channel id="precip_total" typeId="precip_total" />
+			<channel id="precip_hrly" typeId="precip_hrly" />
+			<channel id="uv_desc" typeId="uv_desc" />
+			<channel id="uv_index" typeId="uv_index" />
+
+		</channels>
+		<config-description>
+			<parameter name="user" type="text" required="true" readOnly="false">
+				<label>userid</label>
+				<description>THe Weather company userid</description>
+			</parameter>
+			<parameter name="password" type="text" required="true">
+				<context>password</context>
+				<label>The Weather company userid password</label>
+				<description>The Weather company userid password</description>
+
+			</parameter>
+			<parameter name="url" type="text" required="true">
+				<context>url</context>
+				<label>URL</label>
+				<description>The Weather company Instance URL</description>
+			</parameter>
+            <parameter name="refresh" type="integer" required="true">
+                <label>Refresh Timer </label>
+                <description>Refresh Timer</description>
+                <default>1800</default>
+            </parameter>
+		</config-description>
+	</thing-type>
+
+
+	<channel-type id="temp">
+		<item-type>Number</item-type>
+		<label>Temperature</label>
+		<description>Current Temperature</description>
+	</channel-type>
+	<channel-type id="temp">
+		<item-type>Number</item-type>
+		<label>Temperature</label>
+		<description>Current Temperature</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="rh">
+		<item-type>Number</item-type>
+		<label>relative Humidity</label>
+		<description>relative Humidity</description>
+		<state pattern="%d %" readOnly="true" />
+	</channel-type>
+	<channel-type id="wx_phrase">
+		<item-type>String</item-type>
+		<label>observed weather conditions</label>
+		<description>observed weather conditions</description>
+		<state pattern="%s" readOnly="true" />
+	</channel-type>
+	<channel-type id="pressure">
+		<item-type>Number</item-type>
+		<label> Atmospheric Pressure</label>
+		<description> Atmospheric Pressure</description>
+		<state pattern="%d hPa" readOnly="true" />
+	</channel-type>
+	<channel-type id="wdir">
+		<item-type>Number</item-type>
+		<label>Wind direction</label>
+		<description>Wind direction</description>
+		<state pattern="%d °" readOnly="true" />
+	</channel-type>
+	<channel-type id="wdir_cardinal">
+		<item-type>String</item-type>
+		<label>Wind direction</label>
+		<description>Wind direction</description>
+		<state pattern="%s" readOnly="true" />
+	</channel-type>
+	<channel-type id="wspd">
+		<item-type>Number</item-type>
+		<label>Wind Speed</label>
+		<description>Wind Speed</description>
+		<state pattern="%d Km/h" readOnly="true" />
+	</channel-type>
+	<channel-type id="precip_total">
+		<item-type>Number</item-type>
+		<label>Precipitation amount in the last 24 hours</label>
+		<description>Precipitation amount in the last 24 hours</description>
+		<state pattern="%d mm" readOnly="true" />
+	</channel-type>
+	<channel-type id="precip_total">
+		<item-type>Number</item-type>
+		<label>Precipitation amount in the last 24 hours</label>
+		<description>Precipitation amount in the last 24 hours</description>
+		<state pattern="%d mm" readOnly="true" />
+	</channel-type>
+	<channel-type id="precip_hrly">
+		<item-type>Number</item-type>
+		<label>Precipitation amount in the last hour</label>
+		<description>Precipitation amount in the last hour</description>
+		<state pattern="%d mm" readOnly="true" />
+	</channel-type>
+	<channel-type id="uv_desc">
+		<item-type>String</item-type>
+		<label>Ultraviolet index description</label>
+		<description>Ultraviolet index description</description>
+		<state pattern="%s" readOnly="true" />
+	</channel-type>
+	<channel-type id="uv_index">
+		<item-type>Number</item-type>
+		<label>Ultraviolet index</label>
+		<description>Ultraviolet index</description>
+		<state pattern="%d" readOnly="true" />
+	</channel-type>
+
+	<channel-type id="temp1h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 1 Hour</label>
+		<description>Temperature forecast in one Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp2h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 2 Hours</label>
+		<description>Temperature forecast in 2 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp3h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 3 Hours</label>
+		<description>Temperature forecast in three Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp4h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 4 Hours</label>
+		<description>Temperature forecast in Four Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp6h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 6 Hours</label>
+		<description>Temperature forecast in 6 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp9h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 9 Hours</label>
+		<description>Temperature forecast in 9 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp12h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 12 Hours</label>
+		<description>Temperature forecast in 12 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp18h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 18 Hours</label>
+		<description>Temperature forecast in 18 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp24h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 24 Hours</label>
+		<description>Temperature forecast in 24 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp30h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 30 Hours</label>
+		<description>Temperature forecast in 30 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp36h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 36 Hours</label>
+		<description>Temperature forecast in 36 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp42h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 42 Hours</label>
+		<description>Temperature forecast in 42 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+	<channel-type id="temp48h">
+		<item-type>Number</item-type>
+		<label>Temperature forecast in 48 Hours</label>
+		<description>Temperature forecast in 48 Hour</description>
+		<state pattern="%s °C" readOnly="true" />
+	</channel-type>
+</thing:thing-descriptions>
