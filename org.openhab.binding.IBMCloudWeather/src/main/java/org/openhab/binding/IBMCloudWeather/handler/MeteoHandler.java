@@ -1,6 +1,7 @@
 package org.openhab.binding.IBMCloudWeather.handler;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -13,7 +14,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Channel;
@@ -37,10 +37,10 @@ public class MeteoHandler extends BaseThingHandler {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ScheduledFuture<?> refreshJob;
-    private Configuration thingConfig;
-    static private String user;
-    static private String password;
-    static private String url;
+    private String user;
+    private String password;
+    private String url;
+    private BigDecimal refresh;
     private ClientConfig clientConfig;
     private Client client;
     private HttpAuthenticationFeature feature;
@@ -63,24 +63,24 @@ public class MeteoHandler extends BaseThingHandler {
         // TODO Auto-generated method stub
         // super.initialize();
         logger.debug("Initializing meteo Handler");
-        thingConfig = thing.getConfiguration();
         Map<String, Object> m = thing.getConfiguration().getProperties();
 
-        MeteoHandler.user = (String) m.get("user");
-        MeteoHandler.password = (String) m.get("password");
-        MeteoHandler.url = (String) m.get("url");
+        this.user = (String) m.get("user");
+        this.password = (String) m.get("password");
+        this.url = (String) m.get("url");
+        this.refresh = (BigDecimal) m.get("refresh");
 
         this.clientConfig = new ClientConfig();
 
-        feature = HttpAuthenticationFeature.basic(MeteoHandler.user, MeteoHandler.password);
+        feature = HttpAuthenticationFeature.basic(this.user, this.password);
 
         clientConfig.register(feature);
 
         client = ClientBuilder.newClient(clientConfig);
 
-        logger.debug("confg parameter user : {}", MeteoHandler.user);
-        logger.debug("confg parameter password: {}", MeteoHandler.password);
-        logger.debug("confg parameter url : {}", MeteoHandler.url);
+        logger.debug("confg parameter user : {}", this.user);
+        logger.debug("confg parameter password: {}", this.password);
+        logger.debug("confg parameter url : {}", this.url);
         startAutomaticRefresh();
         updateStatus(ThingStatus.ONLINE);
 
@@ -109,13 +109,19 @@ public class MeteoHandler extends BaseThingHandler {
                 WebTarget webTarget = client.target("https://twcservice.eu-gb.mybluemix.net")
                         .queryParam("language", "fr-FR").queryParam("units", "m")
                         .path("/api/weather/v1/location/34000%3A4%3AFR/observations.json");
+
                 Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+                logger.debug("Starting target");
+
                 Response response = invocationBuilder.get();
+                logger.debug("response : {} ", response.getStatus());
 
                 if (response.getStatus() == 200) {
 
                     // Jackson code to convert JSON String to Java object
                     ObjectMapper objectMapper = new ObjectMapper();
+                    logger.debug("response : {} ", response.getStatus());
+
                     objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
                     try {
@@ -133,19 +139,20 @@ public class MeteoHandler extends BaseThingHandler {
                             State s = new DecimalType(0);
                             switch (ch.getUID().toString().split(":")[3]) {
                                 case "temp":
+                                    logger.debug("in temp : {}", o.getTemp());
                                     s = new DecimalType(o.getTemp());
                                     // updateState(ch.getUID(), new DecimalType(o.getTemp()));
                                     break;
                                 case "rh":
-                                    logger.debug("in rh");
+                                    logger.debug("in rh : {}", o.getRh());
                                     s = new DecimalType(o.getRh());
                                     break;
                                 case "wx_phrase":
-                                    logger.debug("in wx_phrase");
+                                    logger.debug("in wx_phrase : {} ", o.getWx_phrase());
                                     s = new StringType(o.getWx_phrase());
                                     break;
                                 case "wdir":
-                                    logger.debug("in wx_dir");
+                                    logger.debug("in wx_dir : {} ", o.getWdir());
                                     s = new DecimalType(o.getWdir());
                                     break;
                                 case "precip_total":
@@ -157,7 +164,7 @@ public class MeteoHandler extends BaseThingHandler {
                                     }
                                     break;
                                 case "wdir_cardinal":
-                                    logger.debug("in wdir_cardinal");
+                                    logger.debug("in wdir_cardinal : ", o.getWdir_cardinal());
                                     s = new StringType(o.getWdir_cardinal());
                                     break;
                                 case "wspd":
@@ -205,7 +212,15 @@ public class MeteoHandler extends BaseThingHandler {
             }
         };
 
-        refreshJob = scheduler.scheduleWithFixedDelay(runnable, 10, 300, TimeUnit.SECONDS);
+        refreshJob = scheduler.scheduleWithFixedDelay(runnable, 10, refresh.intValue(), TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
+        // TODO Auto-generated method stub
+        logger.warn("reconfiguring : {} ", this.thing.getUID());
+        super.handleConfigurationUpdate(configurationParameters);
+
     }
 
 }

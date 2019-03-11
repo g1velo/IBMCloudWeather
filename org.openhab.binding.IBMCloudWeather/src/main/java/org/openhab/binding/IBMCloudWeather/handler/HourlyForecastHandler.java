@@ -13,7 +13,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -33,10 +32,10 @@ public class HourlyForecastHandler extends BaseThingHandler {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ScheduledFuture<?> refreshJob;
-    private Configuration thingConfig;
     static private String user;
     static private String password;
     static private String url;
+    private Integer refresh;
     private ClientConfig clientConfig;
     private Client client;
     private HttpAuthenticationFeature feature;
@@ -59,12 +58,12 @@ public class HourlyForecastHandler extends BaseThingHandler {
         // TODO Auto-generated method stub
         // super.initialize();
         logger.debug("Initializing meteo Handler");
-        thingConfig = thing.getConfiguration();
-        Map<String, Object> m = thing.getConfiguration().getProperties();
 
+        Map<String, Object> m = thing.getConfiguration().getProperties();
         HourlyForecastHandler.user = (String) m.get("user");
         HourlyForecastHandler.password = (String) m.get("password");
         HourlyForecastHandler.url = (String) m.get("url");
+        this.refresh = (Integer) m.get("refresh");
 
         this.clientConfig = new ClientConfig();
 
@@ -77,6 +76,7 @@ public class HourlyForecastHandler extends BaseThingHandler {
         logger.debug("confg parameter user : {}", HourlyForecastHandler.user);
         logger.debug("confg parameter password: {}", HourlyForecastHandler.password);
         logger.debug("confg parameter url : {}", HourlyForecastHandler.url);
+
         startAutomaticRefresh();
         updateStatus(ThingStatus.ONLINE);
 
@@ -145,8 +145,7 @@ public class HourlyForecastHandler extends BaseThingHandler {
 
             }
         };
-
-        refreshJob = scheduler.scheduleWithFixedDelay(runnable, 1000, 6000, TimeUnit.SECONDS);
+        refreshJob = scheduler.scheduleWithFixedDelay(runnable, 30, refresh, TimeUnit.SECONDS);
     }
 
 }

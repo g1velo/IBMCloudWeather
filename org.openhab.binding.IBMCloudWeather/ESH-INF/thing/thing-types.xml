@@ -59,7 +59,6 @@
 			<channel id="precip_hrly" typeId="precip_hrly" />
 			<channel id="uv_desc" typeId="uv_desc" />
 			<channel id="uv_index" typeId="uv_index" />
-
 		</channels>
 		<config-description>
 			<parameter name="user" type="text" required="true" readOnly="false">
@@ -80,17 +79,10 @@
             <parameter name="refresh" type="integer" required="true">
                 <label>Refresh Timer </label>
                 <description>Refresh Timer</description>
-                <default>1800</default>
+                <default>3600</default>
             </parameter>
 		</config-description>
 	</thing-type>
-
-
-	<channel-type id="temp">
-		<item-type>Number</item-type>
-		<label>Temperature</label>
-		<description>Current Temperature</description>
-	</channel-type>
 	<channel-type id="temp">
 		<item-type>Number</item-type>
 		<label>Temperature</label>
@@ -101,7 +93,7 @@
 		<item-type>Number</item-type>
 		<label>relative Humidity</label>
 		<description>relative Humidity</description>
-		<state pattern="%d %" readOnly="true" />
+		<state pattern="%d" readOnly="true" />
 	</channel-type>
 	<channel-type id="wx_phrase">
 		<item-type>String</item-type>
